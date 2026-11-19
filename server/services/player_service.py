@@ -3,11 +3,12 @@ Player Persistence & State Service for Odyssey
 Backs player profile, relics, scores, and unlocked islands with SQLite.
 """
 
+import os
 import sqlite3
 import json
 from typing import Dict, Any, List
 
-DB_PATH = "server/odyssey.db"
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "odyssey.db")
 
 RELIC_MAP = {
     1: {"id": "relic_ml", "name": "The Matrix of Foresight", "desc": "Reveals mathematical certainty amidst statistical noise."},

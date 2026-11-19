@@ -9,6 +9,12 @@ if str(server_dir) not in sys.path:
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
+# Ensure real-time unbuffered logging in containerized environments (e.g. Render)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(line_buffering=True)
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(line_buffering=True)
+
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -323,5 +329,7 @@ if client_dist.exists():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.environ.get("PORT", 10000))
+    print(f"[ODYSSEY] Launching FastAPI server on 0.0.0.0:{port}...", flush=True)
+    uvicorn.run("server.main:app" if (root_dir / "server").exists() else "main:app", host="0.0.0.0", port=port)
 
